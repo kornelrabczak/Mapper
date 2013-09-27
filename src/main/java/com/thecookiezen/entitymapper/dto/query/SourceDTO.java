@@ -12,4 +12,10 @@ public class SourceDTO {
 	private String name;
 	
 	private FileDTO thumbnail;
+
+	public SourceDTO(long id, String name, FileDTO thumbnail) {
+		this.id = id;
+		this.name = name;
+		this.thumbnail = thumbnail;
+	}
 }

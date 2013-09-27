@@ -12,4 +12,10 @@ public class AuthorDTO {
 	private String name;
 	
 	private String city;
+
+	public AuthorDTO(long id, String name, String city) {
+		this.id = id;
+		this.name = name;
+		this.city = city;
+	}
 }

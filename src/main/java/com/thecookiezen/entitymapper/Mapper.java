@@ -3,8 +3,8 @@ package com.thecookiezen.entitymapper;
 /**
  * @author nikom
  */
-public interface Mapper<T> {
+public interface Mapper<T, K> {
 	
-	<D> D apply(Class<D> dstClass, T src);
+	K apply(T src);
 	
 }
