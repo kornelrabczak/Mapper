@@ -12,6 +12,7 @@ import com.thecookiezen.entitymapper.entity.Category;
 import com.thecookiezen.entitymapper.entity.File;
 import com.thecookiezen.entitymapper.entity.Source;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -39,7 +40,7 @@ public class EntityToDtoMapperFactory {
 		return new Mapper<Source, SourceDTO>() {
 			public SourceDTO apply(Source src) {
 				return new SourceDTO(src.getId(), src.getName(),
-				Optional.fromNullable(src.getThumbnail()).transform(new Function<File, FileDTO>() {
+					Optional.fromNullable(src.getThumbnail()).transform(new Function<File, FileDTO>() {
 					public FileDTO apply(File file) {
 						return mapFileToDTO(file);
 					}
@@ -52,23 +53,30 @@ public class EntityToDtoMapperFactory {
 		return new Mapper<File, FileDTO>() {
 			public FileDTO apply(File src) {
 				return new FileDTO(src.getId(), src.getName(),
-				Lists.transform(src.getCategories(), new Function<Category, CategoryDTO>() {
-					public CategoryDTO apply(Category category) {
-						return mapCategegoryToDTO(category);
-					}
-				}),
-				// jezeli lista autorow moze byc nullem to korzystamy z optional
-				Lists.transform(Optional.fromNullable(src.getAuthors()).or(new ArrayList<Author>()), new Function<Author, AuthorDTO>() {
-					public AuthorDTO apply(Author author) {
-						return mapAuthorToDTO(author);
-					}
-				}),
-				Optional.fromNullable(src.getSource()).transform(new Function<Source, SourceDTO>() {
-					public SourceDTO apply(Source source) {
-						return mapSourceToDTO(source);
-					}
-				}).orNull(), src.getUrl(), src.getSize(), src.getTags());
+					categoriesToDTO(Optional.fromNullable(src.getCategories()).or(new ArrayList<Category>())),
+					authorsToDTO(Optional.fromNullable(src.getAuthors()).or(new ArrayList<Author>())),
+					Optional.fromNullable(src.getSource()).transform(new Function<Source, SourceDTO>() {
+						public SourceDTO apply(Source source) {
+							return mapSourceToDTO(source);
+						}
+					}).orNull(), src.getUrl(), src.getSize(), src.getTags());
 			}
 		}.apply(file);
+	}
+
+	public static List<CategoryDTO> categoriesToDTO(List<Category> categories) {
+		return Lists.transform(categories, new Function<Category, CategoryDTO>() {
+			public CategoryDTO apply(Category category) {
+				return mapCategegoryToDTO(category);
+			}
+		});
+	}
+	
+	public static List<AuthorDTO> authorsToDTO(List<Author> authors) {
+		return Lists.transform(authors, new Function<Author, AuthorDTO>() {
+			public AuthorDTO apply(Author author) {
+				return mapAuthorToDTO(author);
+			}
+		});
 	}
 }
