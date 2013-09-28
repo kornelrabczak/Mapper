@@ -11,6 +11,7 @@ import com.thecookiezen.entitymapper.entity.Author;
 import com.thecookiezen.entitymapper.entity.Category;
 import com.thecookiezen.entitymapper.entity.File;
 import com.thecookiezen.entitymapper.entity.Source;
+import java.util.ArrayList;
 
 /**
  *
@@ -56,7 +57,8 @@ public class EntityToDtoMapperFactory {
 						return mapCategegoryToDTO(category);
 					}
 				}),
-				Lists.transform(src.getAuthors(), new Function<Author, AuthorDTO>() {
+				// jezeli lista autorow moze byc nullem to korzystamy z optional
+				Lists.transform(Optional.fromNullable(src.getAuthors()).or(new ArrayList<Author>()), new Function<Author, AuthorDTO>() {
 					public AuthorDTO apply(Author author) {
 						return mapAuthorToDTO(author);
 					}
