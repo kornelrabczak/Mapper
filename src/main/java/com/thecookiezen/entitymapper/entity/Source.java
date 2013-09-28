@@ -14,4 +14,14 @@ public class Source {
 	
 	private File thumbnail;
 	
+	private int counter;
+	
+	public void increment() {
+		counter++;
+	}
+	
+	public void decrement() {
+		counter--;
+	}
+	
 }

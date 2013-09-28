@@ -2,6 +2,7 @@ package com.thecookiezen.entitymapper.entity;
 
 import java.util.List;
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * @author nikom
@@ -24,4 +25,9 @@ public class File {
 	private int size;
 	
 	private String tags;
+	
+	public void setSource(@NonNull final Source source) {
+		source.increment();
+		this.source = source;
+	}
 }
