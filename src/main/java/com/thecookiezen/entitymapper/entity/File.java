@@ -1,6 +1,8 @@
 package com.thecookiezen.entitymapper.entity;
 
 import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -8,8 +10,10 @@ import lombok.NonNull;
  * @author nikom
  */
 @Data
+@Entity
 public class File {
 	
+	@Id
 	private long id;
 	
 	private String name;
