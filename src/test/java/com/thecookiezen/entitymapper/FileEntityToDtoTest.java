@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.core.Is.is;
 
 /**
  * @author nikom
@@ -32,30 +31,12 @@ public class FileEntityToDtoTest {
 	}
 	
 	@Test
-	public void shouldMapEntityToDTO() {
+	public void shouldMapEntityWithoutSourceThumbnailToDTO() {
 		// given
-		Author author = mock(Author.class);
-		when(author.getId()).thenReturn(11L);
-		when(author.getName()).thenReturn("author name");
-		when(author.getCity()).thenReturn("Warsjawa");
-		
-		File thumbnail = mock(File.class);
-		when(thumbnail.getId()).thenReturn(17L);
-		when(thumbnail.getName()).thenReturn("thumbnail");
-		when(thumbnail.getSize()).thenReturn(2561);
-		
-		Source source = mock(Source.class);
-		when(source.getId()).thenReturn(115L);
-		when(source.getName()).thenReturn("author name");
-//		when(source.getThumbnail()).thenReturn(thumbnail);
-		
-		Category category1 = mock(Category.class);
-		when(category1.getId()).thenReturn(10L);
-		when(category1.getName()).thenReturn("nazwa testowa");
-		
-		Category category2 = mock(Category.class);
-		when(category2.getId()).thenReturn(12L);
-		when(category2.getName()).thenReturn("nazwa testowa 2");
+		Author author = mockAuthor(11L, "author name", "Warsjawa");
+		Category category1 = mockCategory(10L, "nazwa testowa");
+		Category category2 = mockCategory(12L, "nazwa testowa 2");
+		Source source = mockSource(115L, "author name", null);
 		
 		File file = mock(File.class);
 		when(file.getId()).thenReturn(13L);
@@ -80,5 +61,51 @@ public class FileEntityToDtoTest {
 		assertEquals("DTO url should be same value.", file.getAuthors().get(0).getCity(), dto.getAuthors().get(0).getCity());
 		assertEquals("DTO categories should be same value.", file.getCategories().get(0).getName(), dto.getCategories().get(0).getName());
 		assertEquals("DTO source should be same value.", file.getSource().getId(), dto.getSource().getId());
+	}
+	
+	@Test
+	public void shouldMapEntityWithSourceThumbnailToDTO() {
+		// given
+		File thumbnail = mock(File.class);
+		when(thumbnail.getId()).thenReturn(17L);
+		when(thumbnail.getName()).thenReturn("thumbnail");
+		when(thumbnail.getSize()).thenReturn(2561);
+		
+		Source source = mockSource(115L, "a(mockSourceuthor name", thumbnail);
+		
+		File file = mock(File.class);
+		when(file.getId()).thenReturn(113L);
+		when(file.getSource()).thenReturn(source);
+		
+		// when
+		FileDTO dto = EntityToDtoMapperFactory.mapFileToDTO(file);
+		
+		// then
+		assertNotNull(dto);
+		assertEquals("DTO id should be same value.", file.getId(), dto.getId());
+		assertEquals("DTO source should be same value.", file.getSource().getThumbnail().getSize(), dto.getSource().getThumbnail().getSize());
+	}
+	
+	public Author mockAuthor(long id, String name, String city) {
+		Author author = mock(Author.class);
+		when(author.getId()).thenReturn(id);
+		when(author.getName()).thenReturn(name);
+		when(author.getCity()).thenReturn(city);
+		return author;
+	}
+	
+	public Category mockCategory(long id, String name) {
+		Category category = mock(Category.class);
+		when(category.getId()).thenReturn(id);
+		when(category.getName()).thenReturn(name);
+		return category;
+	}
+	
+	public Source mockSource(long id, String name, File thumbnail) {
+		Source source = mock(Source.class);
+		when(source.getId()).thenReturn(id);
+		when(source.getName()).thenReturn(name);
+		when(source.getThumbnail()).thenReturn(thumbnail);
+		return source;
 	}
 }

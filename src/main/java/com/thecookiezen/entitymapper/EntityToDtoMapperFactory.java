@@ -38,12 +38,11 @@ public class EntityToDtoMapperFactory {
 		return new Mapper<Source, SourceDTO>() {
 			public SourceDTO apply(Source src) {
 				return new SourceDTO(src.getId(), src.getName(),
-					Optional.fromNullable(src.getThumbnail()).transform(new Function<File, FileDTO>() {
-						public FileDTO apply(File file) {
-							return mapFileToDTO(file);
-						}
-					}).orNull()
-				);
+				Optional.fromNullable(src.getThumbnail()).transform(new Function<File, FileDTO>() {
+					public FileDTO apply(File file) {
+						return mapFileToDTO(file);
+					}
+				}).orNull());
 			}
 		}.apply(source);
 	}
@@ -52,17 +51,17 @@ public class EntityToDtoMapperFactory {
 		return new Mapper<File, FileDTO>() {
 			public FileDTO apply(File src) {
 				return new FileDTO(src.getId(), src.getName(),
-					Lists.transform(src.getCategories(), new Function<Category, CategoryDTO>() {
+				Lists.transform(src.getCategories(), new Function<Category, CategoryDTO>() {
 					public CategoryDTO apply(Category category) {
 						return mapCategegoryToDTO(category);
 					}
 				}),
-					Lists.transform(src.getAuthors(), new Function<Author, AuthorDTO>() {
+				Lists.transform(src.getAuthors(), new Function<Author, AuthorDTO>() {
 					public AuthorDTO apply(Author author) {
 						return mapAuthorToDTO(author);
 					}
 				}),
-					Optional.fromNullable(src.getSource()).transform(new Function<Source, SourceDTO>() {
+				Optional.fromNullable(src.getSource()).transform(new Function<Source, SourceDTO>() {
 					public SourceDTO apply(Source source) {
 						return mapSourceToDTO(source);
 					}
