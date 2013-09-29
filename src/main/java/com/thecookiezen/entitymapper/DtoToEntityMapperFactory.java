@@ -72,24 +72,25 @@ public class DtoToEntityMapperFactory {
 	
 	public static File mapModifyFileToEntity(final FileDTO dto) {
 		checkArgument(dto.getId() > 0, "Modify DTO should have id > 0");
-		return mapCreateFileToEntity(dto);
+		return new Mapper<FileDTO, File>() {
+			public File apply(FileDTO src) {
+				return File.createModifyingInstance(src.getId(), src.getName(),
+					categoriesToEntity(src.getCategories()), 
+					authorsToEntity(src.getAuthors()),
+					mapCreateSourceToEntity(src.getSource()),
+					src.getUrl() ,src.getSize(), src.getTags());
+			}
+		}.apply(dto);
 	}
 	
 	public static File mapCreateFileToEntity(final FileDTO dto) {
 		checkArgument(dto.getSource().getId() > 0, "Modify DTO should have id > 0");
-		// walidujemy wazne pola, ktore nie moga byc nullami
 		return new Mapper<FileDTO, File>() {
-			public File apply(FileDTO source) {
-				File file = new File();
-				file.setId(source.getId());
-				file.setName(source.getName());
-				file.setSize(source.getSize());
-				file.setTags(source.getTags());
-				file.setUrl(source.getTags());
-				file.setAuthors(authorsToEntity(source.getAuthors()));
-				file.setCategories(categoriesToEntity(source.getCategories()));
-				file.setSource(mapCreateSourceToEntity(source.getSource()));
-				return file;
+			public File apply(FileDTO src) {
+				return File.createNewInstance(src.getName(),
+					categoriesToEntity(src.getCategories()), 
+					authorsToEntity(src.getAuthors()),
+					mapCreateSourceToEntity(src.getSource()), src.getUrl() ,src.getSize(), src.getTags());
 			}
 		}.apply(dto);
 	}
